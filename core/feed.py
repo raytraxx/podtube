@@ -9,7 +9,6 @@ from core.plugin import Plugin
 
 def render_feed(feed_id: str, plugin: Plugin, options: GlobalOptions, base_url: str):
     feed = plugin.get_feed(feed_id)
-    print(feed)
     if isinstance(feed, str):
         return feed
 
