@@ -1,4 +1,5 @@
 import httpx
+import os
 from flask import Flask, request, Response, render_template, redirect, stream_with_context
 
 from core.feed import render_feed
@@ -7,11 +8,11 @@ from core.plugin.plugin_factory import PluginFactory
 
 
 app = Flask(__name__)
-
+HOST_URL = os.environ.get("HOST_URL")
 
 @app.route('/')
 def index():
-    return render_template('index.html', host_url=request.host_url)
+    return render_template('index.html', host_url=HOST_URL or request.host_url)
 
 
 @app.route('/feed')
@@ -19,7 +20,7 @@ def feed():
     options = GlobalOptions(**request.args)
     feed_generator = PluginFactory.create(options.service, request.args)
     return Response(
-        render_feed(options.id, feed_generator, options, request.host_url),
+        render_feed(options.id, feed_generator, options, HOST_RUL or request.host_url),
         mimetype='application/rss+xml',
         content_type='text/xml'
     )
