@@ -20,7 +20,7 @@ def feed():
     options = GlobalOptions(**request.args)
     feed_generator = PluginFactory.create(options.service, request.args)
     return Response(
-        render_feed(options.id, feed_generator, options, HOST_RUL or request.host_url),
+        render_feed(options.id, feed_generator, options, HOST_URL or request.host_url),
         mimetype='application/rss+xml',
         content_type='text/xml'
     )
