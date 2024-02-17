@@ -1,13 +1,18 @@
+import sys
 import httpx
 import os
 from flask import Flask, request, Response, render_template, redirect, stream_with_context
+
+import logging
 
 from core.feed import render_feed
 from core.options import GlobalOptions
 from core.plugin.plugin_factory import PluginFactory
 
-
 app = Flask(__name__)
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.DEBUG)
+
 HOST_URL = os.environ.get("HOST_URL")
 
 @app.route('/')
@@ -53,4 +58,7 @@ def application_error(e):
 
 
 if __name__ == '__main__':
+    root.warning("test")
+    print("kjs")
+
     app.run(host='0.0.0.0', port=8000)
