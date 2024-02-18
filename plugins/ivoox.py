@@ -22,9 +22,9 @@ class PluginImpl(Plugin):
 
     options: PluginOptions
 
-    def get_feed(self, feed_id):
+    def get_feed(self, original_feed_id):
         """Calculates and returns the subscribable feed."""
-        feed_id = feed_id.split("_")[-2]
+        feed_id = original_feed_id.split("_")[-2]
         original_feed_url = f'https://www.ivoox.com/feed_fg_{feed_id}_filtro_1.xml'
 
         with urllib.request.urlopen(original_feed_url) as response:
@@ -35,7 +35,7 @@ class PluginImpl(Plugin):
 
         host_url = os.environ.get("HOST_URL")
         if host_url:
-            feed_url = f'{host_url}feed?service=ivoox&id={feed_id}'
+            feed_url = f'{host_url}feed?service=ivoox&id={original_feed_id}'
 
             link_tag = tree.find("channel").find("atom:link", namespaces)
             link_tag.set("href", feed_url)
