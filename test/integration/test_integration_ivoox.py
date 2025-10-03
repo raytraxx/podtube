@@ -5,7 +5,7 @@ from plugins.ivoox import PluginImpl
 
 def test_get_feed(utils, httpx_mock):
     channel_id = "podcast-podcast-podcast-campamento-krypton_sq_f167429_1"
-    expected_url =  f"https://www.ivoox.com/feed_fg_f167429_filtro_1.xml"
+    expected_url = "https://www.ivoox.com/feed_fg_f167429_filtro_1.xml"
     httpx_mock.add_response(
         method="GET",
         url=expected_url,

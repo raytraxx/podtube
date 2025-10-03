@@ -1,6 +1,6 @@
 from urllib.parse import urlencode
 
-from pod2gen import Podcast, Episode, Media, NotSupportedByItunesWarning
+from pod2gen import Podcast, Episode, Media
 
 from core.model import PodcastItem
 from core.options import GlobalOptions

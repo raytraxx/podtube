@@ -14,3 +14,6 @@ class FileInfo:
 class SharedFile:
     file_handle: BinaryIO
     file_info: FileInfo
+
+    def close(self) -> None:
+        self.file_handle.close()

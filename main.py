@@ -9,6 +9,7 @@ from flask import (
     redirect,
     stream_with_context,
 )
+from werkzeug.utils import secure_filename
 
 from core.auth import require_auth
 from core.config import Config
@@ -56,17 +57,23 @@ def download():
     options = GlobalOptions(**request.args)
     plugin = PluginFactory.create(options.service, options.plugin, request.args)
     if Config.is_filesystem_mode_enabled(plugin):
-        namespace, item_id = options.id.split(":")
+        parts = options.id.split(":")
+        if len(parts) != 2:
+            return Response("Invalid id format. Expected namespace:file_id", status=400)
+        namespace, item_id = parts
         storage = Storage(plugin)
         shared_file = storage.serve(namespace=namespace, file_id=item_id)
-        return Response(
+        safe_name = secure_filename(shared_file.file_info.filename) or "download"
+        resp = Response(
             stream_with_context(generate_file(shared_file.file_handle)),
-            content_type=shared_file.file_info.mimetype,
+            content_type=shared_file.file_info.mimetype or "application/octet-stream",
             headers={
-                'Content-Disposition': f'attachment; filename="{shared_file.file_info.filename}"',
-                'Content-Length': shared_file.file_info.size
+                'Content-Disposition': f'attachment; filename="{safe_name}"',
+                'Content-Length': str(shared_file.file_info.size)
             },
         )
+        resp.call_on_close(shared_file.close)
+        return resp
     elif options.proxy_download:
         url = plugin.get_item_url(options.id)
         req = httpx.get(url, stream=True)
@@ -95,7 +102,8 @@ def page_not_found(e):
 
 @app.errorhandler(500)
 def application_error(e):
-    return "Sorry, unexpected error: {}".format(e), 500
+    app.logger.exception("Unhandled error: %s", e)
+    return "Sorry, unexpected error.", 500
 
 
 if __name__ == "__main__":

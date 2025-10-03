@@ -5,7 +5,6 @@ from typing import Literal
 import ftfy
 import httpx
 from parsel import Selector, SelectorList
-from pydantic import constr
 
 from core.model import PodcastItem, PodcastFeed
 from core.options import Options
@@ -16,7 +15,6 @@ class PluginImpl(Plugin):
     service = "youtube.com"
 
     class PluginOptions(Options):
-        domain: constr(pattern=r"^[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+$")
         feed_type: Literal["channel", "playlist"] = "channel"
 
     options: PluginOptions
@@ -28,11 +26,12 @@ class PluginImpl(Plugin):
     }
 
     def __init__(self, options: dict[str, str]):
-        super().__init__({"domain": os.getenv("INVIDIOUS_DOMAIN"), **options})
+        self.domain = os.getenv("INVIDIOUS_DOMAIN")
+        super().__init__(options)
 
     def get_feed(self, feed_id):
         response = httpx.get(
-            f"https://{self.options.domain}/feed/{self.options.feed_type}/{feed_id}",
+            f"https://{self.domain}/feed/{self.options.feed_type}/{feed_id}",
             timeout=15,
         )
         sel = Selector(response.text, type="xml")
@@ -56,12 +55,12 @@ class PluginImpl(Plugin):
     def _get_feed_link(self, feed_id):
         match self.options.feed_type:
             case "channel":
-                return f"https://{self.options.domain}/channel/{feed_id}"
+                return f"https://{self.domain}/channel/{feed_id}"
             case "playlist":
-                return f"https://{self.options.domain}/playlist?list={feed_id}"
+                return f"https://{self.domain}/playlist?list={feed_id}"
 
     def get_item_url(self, item_id):
-        return f"https://{self.options.domain}/latest_version?id={item_id}&itag=18&local=true"
+        return f"https://{self.domain}/latest_version?id={item_id}&itag=18&local=true"
 
     def _get_items(self, entries: SelectorList) -> list[PodcastItem]:
         return [self._get_item(entry) for entry in entries]
@@ -83,7 +82,7 @@ class PluginImpl(Plugin):
             item_id=video_id,
             title=entry.xpath("atom:title/text()", namespaces=self.namespace_map).get(),
             description=description and ftfy.fix_text(description),
-            link=f"https://{self.options.domain}/watch?v={video_id}",
+            link=f"https://{self.domain}/watch?v={video_id}",
             date=datetime.fromisoformat(
                 entry.xpath(
                     "atom:published/text()", namespaces=self.namespace_map

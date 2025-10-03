@@ -24,7 +24,10 @@ class Storage:
 
     def serve(self, namespace: str, file_id: str) -> SharedFile:
         self._assert_permissions()
-        filename = self._get_namespace_files(namespace)[file_id]
+        try:
+            filename = self._get_namespace_files(namespace)[file_id]
+        except KeyError:
+            raise InputError(f"File not found: {namespace}:{file_id}")
         full_filename = self._path(namespace, filename)
         return SharedFile(
             file_handle=open(full_filename, 'rb'),
