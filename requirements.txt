@@ -1,11 +1,11 @@
 pod2gen==1.0.3
-yt-dlp==2025.2.19
-flask==3.1.0
+yt-dlp==2025.9.26
+flask==3.1.2
 gunicorn==23.0.0
 httpx==0.28.1
 parsel==1.10.0
-dateparser==1.2.1
-pydantic==2.10.6
+dateparser==1.2.2
+pydantic==2.11.9
 ftfy==6.3.1
-python-dotenv==1.0.1
-xxhash==3.5.0
+python-dotenv==1.1.1
+xxhash==3.6.0

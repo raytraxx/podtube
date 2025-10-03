@@ -1,4 +1,3 @@
-import warnings
 from urllib.parse import urlencode
 
 from pod2gen import Podcast, Episode, Media, NotSupportedByItunesWarning
@@ -6,14 +5,6 @@ from pod2gen import Podcast, Episode, Media, NotSupportedByItunesWarning
 from core.model import PodcastItem
 from core.options import GlobalOptions
 from core.plugin import Plugin
-
-
-warnings.filterwarnings("ignore", category=NotSupportedByItunesWarning)
-warnings.filterwarnings(
-    "ignore",
-    message="Size is set to 0. This should ONLY be done when there is no possible way to determine the media's size, like if the media is a stream.",
-    category=UserWarning,
-)
 
 
 def render_feed(feed_id: str, plugin: Plugin, options: GlobalOptions, base_url: str):
