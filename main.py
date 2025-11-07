@@ -14,7 +14,6 @@ from werkzeug.utils import secure_filename
 from core.auth import require_auth
 from core.config import Config
 from core.feed import render_feed
-from core.migration import handle_legacy_redirect
 from core.options import GlobalOptions
 from core.plugin.plugin_factory import PluginFactory
 from core.storage.storage import Storage
@@ -32,11 +31,6 @@ def index():
 @app.route("/feed")
 @require_auth
 def feed():
-    # Upgrade podtube v1 urls. Only for a limited time.
-    redirect_resp = handle_legacy_redirect(request.args, "feed")
-    if redirect_resp:
-        return redirect_resp
-
     options = GlobalOptions(**request.args)
     feed_generator = PluginFactory.create(options.service, options.plugin, request.args)
     return Response(
@@ -49,11 +43,6 @@ def feed():
 @app.route("/download")
 @require_auth
 def download():
-    # Upgrade podtube v1 urls. Only for a limited time.
-    redirect_resp = handle_legacy_redirect(request.args, "download")
-    if redirect_resp:
-        return redirect_resp
-
     options = GlobalOptions(**request.args)
     plugin = PluginFactory.create(options.service, options.plugin, request.args)
     if Config.is_filesystem_mode_enabled(plugin):
