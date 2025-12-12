@@ -1,5 +1,5 @@
 pod2gen==1.0.3
-yt-dlp==2025.10.22
+yt-dlp[default]
 flask==3.1.2
 gunicorn==23.0.0
 httpx==0.28.1
@@ -9,3 +9,4 @@ pydantic==2.12.4
 ftfy==6.3.1
 python-dotenv==1.2.1
 xxhash==3.6.0
+fake-useragent==2.2.0

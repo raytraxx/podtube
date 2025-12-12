@@ -1,5 +1,7 @@
 import abc
 
+from fake_useragent import UserAgent
+
 from core.model import PodcastFeed
 from core.options import Options
 
@@ -23,3 +25,6 @@ class Plugin(abc.ABC):
     @abc.abstractmethod
     def get_item_url(self, item_id: str) -> str:
         """Calculates the downloadable url of an item in the feed."""
+
+    def random_user_agent(self):
+        return UserAgent().random

@@ -20,8 +20,8 @@ class PluginImpl(Plugin):
         url = f"https://www.ivoox.com/{feed_id}.html"
         match = re.match(self.feed_id_pattern, feed_id)
         parsed_feed_id = match.group(1) if match else None
-        feed_url = f"https://www.ivoox.com/feed_fg_{parsed_feed_id}_filtro_1.xml"
-        response = httpx.get(feed_url, follow_redirects=True)
+        feed_url = f"https://feeds.ivoox.com/feed_fg_{parsed_feed_id}_filtro_1.xml"
+        response = httpx.get(feed_url, follow_redirects=True, headers={"User-Agent": self.random_user_agent()})
         sel = Selector(response.text, type='xml')
         return PodcastFeed(
             feed_id=feed_id,
