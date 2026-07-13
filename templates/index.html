@@ -37,6 +37,52 @@
       * https://www.youtube.com/channel/UC2bkHVIDjXS7sgrgjFtzOXQ -> UC2bkHVIDjXS7sgrgjFtzOXQ<br/>
       * https://www.ivoox.com/podcast-cuarto-milenio-oficial_sq_f17162_1.html -> podcast-cuarto-milenio-oficial_sq_f17162_1<br/>
     </p>
+
+    <form>
+        <input id="url" type="text" placeholder="Channel/podcast url">
+        <button onclick="submit_form(event)">Submit</button>
+        <br>
+        <input id="result" type="text">
+        <button onclick="copy(event)">Copy to clipboard</button>
+    </form>
+
+
+    <script>
+        function submit_form(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            let url = URL.parse(document.getElementById("url").value);
+            let result_input = document.getElementById("result");
+            result_input.value = "";
+            let host_url = "https://asdf.com/"
+
+            if (url.hostname === "www.youtube.com") {
+                let match = url.pathname.match(/^\/channel\/([a-zA-Z0-9]+)$/);
+                if (match) {
+                    result_input.value = `${host_url}feed?id=${match[1]}&service=youtube`
+                }
+            } else if (url.hostname === "www.ivoox.com") {
+                let match = url.pathname.match(/^\/([a-zA-Z0-9_-]+)\.html$/);
+                if (match) {
+                    result_input.value = `${host_url}feed?id=${match[1]}&service=ivoox`
+                }
+            }
+        }
+
+        function copy(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            let result_input = document.getElementById("result");
+            result_input.select();
+            result_input.setSelectionRange(0, 99999);
+
+            navigator.clipboard.writeText(result_input.value);
+        }
+
+    </script>
+
     <h3>format</h3>
     <p>Output format of the feed. Accepted values are rss and atom. The default value is rss.</p>
     <h3>max_pagination</h3>
