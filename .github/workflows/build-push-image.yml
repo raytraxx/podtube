@@ -6,6 +6,7 @@ on:
       - master
     tags:
       - "*"
+  workflow_dispatch: {}
 
 env:
   ACT_REGISTRY: ghcr.io
