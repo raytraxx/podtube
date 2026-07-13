@@ -56,7 +56,7 @@
             let url = URL.parse(document.getElementById("url").value);
             let result_input = document.getElementById("result");
             result_input.value = "";
-            let host_url = "https://asdf.com/"
+            let host_url = "{{ host_url }}"
 
             if (url.hostname === "www.youtube.com") {
                 let match = url.pathname.match(/^\/channel\/([a-zA-Z0-9]+)$/);
